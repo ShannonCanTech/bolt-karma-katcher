@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer, getContext, getServerPort } from '@devvit/server';
 import { getRedis } from '@devvit/redis';
-import { getLeaderboard, addScore, getUserBestScore } from './api/leaderboard';
+import { getLeaderboard, addScore, getUserBestScore, shareScore } from './api/leaderboard';
 
 const app = express();
 
@@ -76,6 +76,82 @@ router.post('/api/leaderboard', async (req, res): Promise<void> => {
     res.status(500).json({
       status: 'error',
       message: 'Failed to add score'
+    });
+  }
+});
+
+// Share score
+router.post('/api/share-score', async (req, res): Promise<void> => {
+  try {
+    const { score, shareType, postId } = req.body;
+    const context = getContext();
+    
+    if (typeof score !== 'number' || score < 0) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Invalid score'
+      });
+      return;
+    }
+    
+    if (!['post', 'comment'].includes(shareType)) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Invalid share type. Must be "post" or "comment"'
+      });
+      return;
+    }
+    
+    if (shareType === 'comment' && !postId) {
+      res.status(400).json({
+        status: 'error',
+        message: 'Post ID required for comment sharing'
+      });
+      return;
+    }
+    
+    if (!context.reddit) {
+      res.status(500).json({
+        status: 'error',
+        message: 'Reddit API not available'
+      });
+      return;
+    }
+    
+    // Get username
+    let username = 'Unknown Player';
+    try {
+      const currentUser = await context.reddit.getCurrentUser();
+      username = currentUser?.username || 'Unknown Player';
+    } catch (userError) {
+      console.log('Could not get username for sharing:', userError);
+    }
+    
+    const result = await shareScore({
+      reddit: context.reddit,
+      score,
+      username,
+      shareType,
+      postId
+    });
+    
+    if (result.success) {
+      res.json({
+        status: 'success',
+        message: result.message,
+        url: result.url
+      });
+    } else {
+      res.status(500).json({
+        status: 'error',
+        message: result.message
+      });
+    }
+  } catch (error) {
+    console.error('Share score error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to share score'
     });
   }
 });

@@ -15,6 +15,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
   const [scores, setScores] = useState<LeaderboardEntry[]>([]);
   const [isDevMode, setIsDevMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [sharingScore, setSharingScore] = useState<number | null>(null);
+  const [shareMessage, setShareMessage] = useState<string>('');
 
   useEffect(() => {
     // Check if we're in development mode (not on devvit.net)
@@ -141,6 +143,45 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
     }
   };
 
+  const handleShareScore = async (score: number, shareType: 'post' | 'comment') => {
+    if (isDevMode) {
+      setShareMessage('Sharing not available in local development mode');
+      setTimeout(() => setShareMessage(''), 3000);
+      return;
+    }
+
+    setSharingScore(score);
+    setShareMessage('');
+
+    try {
+      const response = await fetch('/api/share-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          score,
+          shareType,
+          postId: shareType === 'comment' ? window.location.pathname.split('/').pop() : undefined
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        setShareMessage(`✅ ${result.message}`);
+      } else {
+        setShareMessage(`❌ ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error sharing score:', error);
+      setShareMessage('❌ Failed to share score');
+    } finally {
+      setSharingScore(null);
+      setTimeout(() => setShareMessage(''), 5000);
+    }
+  };
+
   const topScores = scores
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
@@ -156,6 +197,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
           {isDevMode && (
             <p className="text-sm text-amber-600 mt-2">
               ⚠️ Local mode - scores saved locally only
+            </p>
+          )}
+          {shareMessage && (
+            <p className="text-sm mt-2 p-2 rounded bg-gray-100">
+              {shareMessage}
             </p>
           )}
         </div>
@@ -176,7 +222,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
                   'bg-white text-black font-medium border border-gray-200'
                 }`}
               >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 flex-1">
                   <span className="text-2xl">
                     {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                   </span>
@@ -184,7 +230,29 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
                     {entry.username || 'Unknown Player'}
                   </span>
                 </div>
-                <span className="text-xl font-bold text-purple-600">{entry.score}</span>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xl font-bold text-purple-600">{entry.score}</span>
+                  {!isDevMode && (
+                    <div className="flex space-x-1">
+                      <button
+                        onClick={() => handleShareScore(entry.score, 'post')}
+                        disabled={sharingScore === entry.score}
+                        className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded disabled:opacity-50"
+                        title="Share as Post"
+                      >
+                        {sharingScore === entry.score ? '...' : '📝'}
+                      </button>
+                      <button
+                        onClick={() => handleShareScore(entry.score, 'comment')}
+                        disabled={sharingScore === entry.score}
+                        className="text-xs bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded disabled:opacity-50"
+                        title="Share as Comment"
+                      >
+                        {sharingScore === entry.score ? '...' : '💬'}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             ))
           ) : (

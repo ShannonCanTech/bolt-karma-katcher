@@ -31,3 +31,14 @@ export type ScoreSubmissionResponse = Response<{
 export type UserBestScoreResponse = Response<{
   bestScore: number;
 }>;
+
+export type ShareScoreResponse = Response<{
+  message: string;
+  url?: string;
+}>;
+
+export interface ShareScoreRequest {
+  score: number;
+  shareType: 'post' | 'comment';
+  postId?: string;
+}
