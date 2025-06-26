@@ -299,7 +299,7 @@ export const Game: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-full items-center pt-2 pb-2 box-border">
+    <div className="relative flex flex-col h-full items-center pt-2 pb-2 box-border">
       {showBanner && <Banner />}
       {message && (
         <div className="message">
@@ -347,6 +347,16 @@ export const Game: React.FC = () => {
         ))}
       </div>
       <Keyboard onKey={onKey} letterStates={letterStates} />
+      <div
+        className="absolute top-2 right-2 z-50 cursor-pointer"
+        onClick={() => navigateTo('https://bolt.new')}
+      >
+        <img
+          src={boltBadge}
+          alt="Built with Bolt.new badge"
+          className="w-16 h-16 rounded-full shadow-lg"
+        />
+      </div>
     </div>
   );
 };
