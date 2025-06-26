@@ -15,7 +15,7 @@ defineConfig({
 export const BoltBadgeOverlay: Devvit.BlockComponent = () => (
   <hstack alignment="end" padding="medium" width={"100%"} height={"30%"}>
     <image
-      url="bolt-badge2.png"
+      url="bolt-badge-2.png"
       resizeMode="fit"
       description="Built with Bolt.new badge"
       imageHeight={80}
