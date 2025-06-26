@@ -351,14 +351,14 @@ export const KarmaKatcher: React.FC = () => {
           onClose={handleCloseLeaderboard}
         />
       )}
-            <div
-        className="absolute top-2 right-2 z-50 cursor-pointer"
+      <div
+        className="absolute top-2 right-0 sm:right-4 md:right-6 z-50 cursor-pointer"
         onClick={() => navigateTo('https://bolt.new')}
       >
         <img
           src={boltBadge}
           alt="Built with Bolt.new badge"
-          className="w-16 h-16 rounded-full shadow-lg"
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-lg"
         />
       </div>
     </div>
