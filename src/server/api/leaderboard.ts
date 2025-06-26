@@ -130,7 +130,7 @@ export const shareScore = async ({
       
       return {
         success: true,
-        message: 'Score shared as post successfully!',
+        message: `Your score has been posted to r/${subreddit.name}! 🌳`,
         url: post.url
       };
     } else if (shareType === 'comment' && postId) {
@@ -141,7 +141,7 @@ export const shareScore = async ({
       
       return {
         success: true,
-        message: 'Score shared as comment successfully!',
+        message: 'Your score has been shared as a comment on this post! 🐱',
         url: comment.url
       };
     } else {
@@ -151,7 +151,7 @@ export const shareScore = async ({
     console.error('Error sharing score:', error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to share score'
+      message: error instanceof Error ? error.message : 'Oops! Failed to share your score. Please try again.'
     };
   }
 };

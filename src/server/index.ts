@@ -80,10 +80,10 @@ router.post('/api/leaderboard', async (req, res): Promise<void> => {
   }
 });
 
-// Share score
+// Share score - ONLY for current user's current score
 router.post('/api/share-score', async (req, res): Promise<void> => {
   try {
-    const { score, shareType, postId } = req.body;
+    const { score, shareType } = req.body;
     const context = getContext();
     
     if (typeof score !== 'number' || score < 0) {
@@ -98,14 +98,6 @@ router.post('/api/share-score', async (req, res): Promise<void> => {
       res.status(400).json({
         status: 'error',
         message: 'Invalid share type. Must be "post" or "comment"'
-      });
-      return;
-    }
-    
-    if (shareType === 'comment' && !postId) {
-      res.status(400).json({
-        status: 'error',
-        message: 'Post ID required for comment sharing'
       });
       return;
     }
@@ -126,6 +118,9 @@ router.post('/api/share-score', async (req, res): Promise<void> => {
     } catch (userError) {
       console.log('Could not get username for sharing:', userError);
     }
+    
+    // For comments, use the current post ID from context
+    const postId = shareType === 'comment' ? context.postId : undefined;
     
     const result = await shareScore({
       reddit: context.reddit,
@@ -151,7 +146,7 @@ router.post('/api/share-score', async (req, res): Promise<void> => {
     console.error('Share score error:', error);
     res.status(500).json({
       status: 'error',
-      message: 'Failed to share score'
+      message: 'Oops! Failed to share your score. Please try again.'
     });
   }
 });

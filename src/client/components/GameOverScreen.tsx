@@ -43,13 +43,13 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
 
   const handleShareScore = async (shareType: 'post' | 'comment') => {
     if (isDevMode) {
-      setShareMessage('Sharing not available in local development mode');
+      setShareMessage('⚠️ Sharing not available in local development mode');
       setTimeout(() => setShareMessage(''), 3000);
       return;
     }
 
     setIsSharing(true);
-    setShareMessage('');
+    setShareMessage('Sharing your score...');
 
     try {
       const response = await fetch('/api/share-score', {
@@ -59,8 +59,7 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
         },
         body: JSON.stringify({
           score,
-          shareType,
-          postId: shareType === 'comment' ? window.location.pathname.split('/').pop() : undefined
+          shareType
         })
       });
 
@@ -73,7 +72,7 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
       }
     } catch (error) {
       console.error('Error sharing score:', error);
-      setShareMessage('❌ Failed to share score');
+      setShareMessage('❌ Oops! Failed to share your score. Please try again.');
     } finally {
       setIsSharing(false);
       setTimeout(() => setShareMessage(''), 5000);
@@ -122,16 +121,21 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
                   onClick={() => handleShareScore('post')}
                   disabled={isSharing}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                  title="Create a new post in the current subreddit"
                 >
-                  {isSharing ? '...' : '📝 Share as Post'}
+                  {isSharing ? '...' : '📝 Post to Subreddit'}
                 </button>
                 <button
                   onClick={() => handleShareScore('comment')}
                   disabled={isSharing}
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                  title="Comment on this post"
                 >
-                  {isSharing ? '...' : '💬 Comment'}
+                  {isSharing ? '...' : '💬 Comment Here'}
                 </button>
+              </div>
+              <div className="text-xs text-gray-500">
+                <p>📝 Posts go to current subreddit • 💬 Comments appear on this post</p>
               </div>
             </div>
           )}
