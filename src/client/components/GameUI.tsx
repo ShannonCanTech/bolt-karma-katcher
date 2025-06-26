@@ -31,7 +31,7 @@ export const GameUI: React.FC<GameUIProps> = ({ score, timeLeft, missedCats, gam
         <div className="text-right">
           <div className="text-lg font-semibold text-purple-600">Karma Katcher</div>
           <div className="text-sm text-gray-500">
-            {gameState === 'playing' ? 'Testing code changes!' : 
+            {gameState === 'playing' ? 'Click tree to shake!' : 
              gameState === 'ready' ? 'Ready to play!' : 'Game Over!'}
           </div>
         </div>
