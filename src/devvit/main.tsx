@@ -12,6 +12,26 @@ defineConfig({
   menu: { enable: false },
 });
 
+export const BoltBadgeOverlay: Devvit.BlockComponent = () => (
+  <hstack alignment="end" padding="medium" width={"100%"} height={"30%"}>
+    <image
+      url="bolt-badge.png"
+      resizeMode="fit"
+      description="Built with Bolt.new badge"
+      imageHeight={80}
+      imageWidth={80}
+      onPress={() => navigateTo('https://bolt.new')}
+    />
+  </hstack>
+);
+
+export const BoltGame: Devvit.BlockComponent = () => (
+  <zstack width={"100%"} height={"100%"} alignment="center middle">
+    <webview url="index.html" />
+    <BoltBadgeOverlay />
+  </zstack>
+);
+
 export const Preview: Devvit.BlockComponent<{ text?: string }> = ({ text = 'Loading Karma Katcher...' }) => {
   return (
     <zstack width={'100%'} height={'100%'} alignment="center middle">
@@ -70,25 +90,5 @@ Devvit.addMenuItem({
     }
   },
 });
-
-export const BoltBadgeOverlay: Devvit.BlockComponent = () => (
-  <hstack alignment="end" padding="medium" width={"100%"} height={"30%"}>
-    <image
-      url="bolt-badge.png"
-      resizeMode="fit"
-      description="Built with Bolt.new badge"
-      imageHeight={80}
-      imageWidth={80}
-      onPress={() => navigateTo('https://bolt.new')}
-    />
-  </hstack>
-);
-
-export const BoltGame: Devvit.BlockComponent = () => (
-  <zstack width={"100%"} height={"100%"} alignment="center middle">
-    <webview url="index.html" />
-    <BoltBadgeOverlay />
-  </zstack>
-);
 
 export default Devvit;
