@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { navigateTo } from '@devvit/client';
+import boltBadge from '../../assets/bolt-badge.png';
 import { Keyboard } from './Keyboard';
 import { LetterState, CheckResponse } from '../shared/types/game';
 import packageJson from '../../package.json';
