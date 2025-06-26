@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { navigateTo } from '@devvit/client';
+import boltBadge from '../../assets/bolt-badge.png';
 import { Tree } from './components/Tree';
 import { Cat } from './components/Cat';
 import { Net } from './components/Net';
@@ -349,6 +351,16 @@ export const KarmaKatcher: React.FC = () => {
           onClose={handleCloseLeaderboard}
         />
       )}
+            <div
+        className="absolute top-2 right-2 z-50 cursor-pointer"
+        onClick={() => navigateTo('https://bolt.new')}
+      >
+        <img
+          src={boltBadge}
+          alt="Built with Bolt.new badge"
+          className="w-16 h-16 rounded-full shadow-lg"
+        />
+      </div>
     </div>
   );
 };
