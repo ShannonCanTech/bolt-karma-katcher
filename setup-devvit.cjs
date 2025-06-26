@@ -19,11 +19,11 @@ function updateDevvitName() {
   const content = fs.readFileSync(devvitYamlPath, 'utf8');
   const parsedYaml = yaml.parse(content);
 
-  if (parsedYaml.name.startsWith('karma-katcher')) {
+  if (parsedYaml.name === 'YOUR_APP_NAME') {
     const suffix = generateRandomSuffix(6);
-    parsedYaml.name = `karma-katcher-${suffix}`;
+    parsedYaml.name = `bolt-${suffix}`;
     fs.writeFileSync(devvitYamlPath, yaml.stringify(parsedYaml));
-    console.log(`Updated app name to karma-katcher-${suffix}`);
+    console.log(`Updated app name to bolt-${suffix}`);
   }
 }
 
