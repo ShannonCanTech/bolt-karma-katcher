@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 interface LeaderboardEntry {
   score: number;
   timestamp: number;
+  username?: string;
 }
 
 interface LeaderboardProps {
@@ -55,7 +56,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
       if (localScores) {
         try {
           const parsedScores = JSON.parse(localScores);
-          setScores(Array.isArray(parsedScores) ? parsedScores : []);
+          // Add default username for local scores
+          const scoresWithUsername = Array.isArray(parsedScores) 
+            ? parsedScores.map(score => ({
+                ...score,
+                username: score.username || 'Local Player'
+              }))
+            : [];
+          setScores(scoresWithUsername);
         } catch (parseError) {
           console.error('Failed to parse local scores:', parseError);
           setScores([]);
@@ -70,7 +78,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
       if (localScores) {
         try {
           const parsedScores = JSON.parse(localScores);
-          setScores(Array.isArray(parsedScores) ? parsedScores : []);
+          // Add default username for local scores
+          const scoresWithUsername = Array.isArray(parsedScores) 
+            ? parsedScores.map(score => ({
+                ...score,
+                username: score.username || 'Local Player'
+              }))
+            : [];
+          setScores(scoresWithUsername);
         } catch (parseError) {
           console.error('Failed to parse local scores:', parseError);
           setScores([]);
@@ -86,7 +101,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
   const saveScore = async (score: number) => {
     const newEntry: LeaderboardEntry = {
       score,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      username: 'Local Player' // Default for local development
     };
 
     try {
@@ -165,7 +181,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ currentScore, onClose 
                     {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                   </span>
                   <span className="font-semibold">
-                    {new Date(entry.timestamp).toLocaleDateString()}
+                    {entry.username || 'Unknown Player'}
                   </span>
                 </div>
                 <span className="text-xl font-bold text-purple-600">{entry.score}</span>

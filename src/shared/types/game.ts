@@ -17,6 +17,7 @@ export interface LeaderboardEntry {
   score: number;
   timestamp: number;
   userId?: string;
+  username?: string;
 }
 
 export type LeaderboardResponse = Response<{

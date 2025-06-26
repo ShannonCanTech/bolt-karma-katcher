@@ -5,6 +5,7 @@ interface LeaderboardEntry {
   score: number;
   timestamp: number;
   userId?: string;
+  username?: string;
 }
 
 const LEADERBOARD_KEY = 'karma_katcher_leaderboard';
@@ -33,10 +34,12 @@ export const addScore = async ({
   redis,
   score,
   userId,
+  username,
 }: {
   redis: Context['redis'] | RedisClient;
   score: number;
   userId?: string;
+  username?: string;
 }): Promise<void> => {
   try {
     const currentData = await redis.get(LEADERBOARD_KEY);
@@ -46,6 +49,7 @@ export const addScore = async ({
       score,
       timestamp: Date.now(),
       userId,
+      username,
     };
     
     entries.push(newEntry);

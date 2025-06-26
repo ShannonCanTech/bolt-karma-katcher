@@ -24,7 +24,8 @@ router.get('/api/leaderboard', async (_req, res): Promise<void> => {
       status: 'success',
       scores: scores.map(entry => ({
         score: entry.score,
-        timestamp: entry.timestamp
+        timestamp: entry.timestamp,
+        username: entry.username || 'Unknown Player'
       }))
     });
   } catch (error) {
@@ -40,7 +41,8 @@ router.get('/api/leaderboard', async (_req, res): Promise<void> => {
 router.post('/api/leaderboard', async (req, res): Promise<void> => {
   try {
     const { score } = req.body;
-    const { userId } = getContext();
+    const context = getContext();
+    const { userId } = context;
     
     if (typeof score !== 'number' || score < 0) {
       res.status(400).json({
@@ -50,8 +52,20 @@ router.post('/api/leaderboard', async (req, res): Promise<void> => {
       return;
     }
     
+    // Get username from Reddit API
+    let username = 'Unknown Player';
+    try {
+      if (context.reddit) {
+        const currentUser = await context.reddit.getCurrentUser();
+        username = currentUser?.username || 'Unknown Player';
+      }
+    } catch (userError) {
+      console.log('Could not get username:', userError);
+      // Continue with default username
+    }
+    
     const redis = getRedis();
-    await addScore({ redis, score, userId });
+    await addScore({ redis, score, userId, username });
     
     res.json({
       status: 'success',
