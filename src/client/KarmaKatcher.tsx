@@ -352,7 +352,7 @@ export const KarmaKatcher: React.FC = () => {
         />
       )}
       <div
-        className="absolute top-2 right-0 md:top-4 md:right-4 z-50 cursor-pointer"
+        className="absolute top-2 right-0 sm:right-4 md:right-6 z-50 cursor-pointer"
         onClick={() => navigateTo('https://bolt.new')}
       >
         <img
